@@ -12,9 +12,9 @@ Adafruit_BMP280 bmp;
 const int mqPin = 34;
 
 // ------------------ WIFI & SERVER ------------------
-const char *ssid = "C.A. & O. Lab";
-const char *password = "123456789";
-const char *serverName = "http://192.168.0.105:8000/api/data/";
+const char *ssid = "Your-WiFi-Name";
+const char *password = "Your-WiFi-Password";
+const char *serverName = "http://your-ip:8000/api/data/";
 
 // ------------------ SETUP ------------------
 void setup()
