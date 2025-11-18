@@ -58,7 +58,7 @@ It is designed as a scalable IoT monitoring solution suitable for **smart homes,
 ---
 
 
-## 📡 Block Diagram
+## 🔌Circuit Diagram
 
 This shows the basic working flow of the system.
 
