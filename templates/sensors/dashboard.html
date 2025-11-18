@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌍 Environment Monitoring Dashboard</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body {
+      background-color: #f7f9fc;
+      font-family: "Poppins", sans-serif;
+      color: #333;
+    }
+    .card {
+      border: none;
+      border-radius: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    .card-header {
+      background: linear-gradient(45deg, #007bff, #00c6ff);
+      color: white;
+      font-weight: 600;
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+      text-align: center;
+      padding: 10px;
+    }
+    .chart-container {
+      position: relative;
+      height: 300px;
+    }
+    .navbar {
+      background: linear-gradient(45deg, #1d3557, #457b9d);
+    }
+    .navbar-brand {
+      color: white !important;
+      font-weight: 700;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+      <a class="navbar-brand mx-auto" href="#">🌍 Environment Monitoring Dashboard</a>
+    </div>
+  </nav>
+
+  <div class="container mt-4 mb-4">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">🌡 Temperature (°C)</div>
+          <div class="card-body">
+            <div class="chart-container">
+              <canvas id="tempChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">💧 Humidity (%)</div>
+          <div class="card-body">
+            <div class="chart-container">
+              <canvas id="humidityChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">⛰ Pressure (hPa)</div>
+          <div class="card-body">
+            <div class="chart-container">
+              <canvas id="pressureChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">🧪 Air Quality (Analog)</div>
+          <div class="card-body">
+            <div class="chart-container">
+              <canvas id="airChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Use the serialized Django data
+  const rawData = JSON.parse('{{ data_json|safe }}').map(obj => obj.fields);
+
+
+    // Convert timestamps and handle nulls
+    const labels = rawData.map(d => new Date(d.created_at).toLocaleTimeString());
+    const temperature = rawData.map(d => d.temperature !== null ? d.temperature : null);
+    const humidity = rawData.map(d => d.humidity !== null ? d.humidity : null);
+    const pressure = rawData.map(d => d.pressure !== null ? d.pressure : null);
+    const air_quality = rawData.map(d => d.air_quality !== null ? d.air_quality : null);
+
+    // Chart helper
+    function createChart(canvasId, label, dataArr, color) {
+      new Chart(document.getElementById(canvasId), {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: label,
+            data: dataArr,
+            borderColor: color,
+            backgroundColor: 'rgba(0,0,0,0)',
+            fill: false,
+            tension: 0.3,
+            pointRadius: 3,
+            spanGaps: true
+          }]
+        },
+        options: {
+          responsive: true,
+          interaction: {
+            mode: 'nearest',
+            intersect: false
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return context.raw === null ? 'No data' : context.raw;
+                }
+              }
+            }
+          },
+          scales: {
+            x: { display: false },
+            y: { beginAtZero: false }
+          }
+        }
+      });
+    }
+
+    createChart('tempChart', 'Temperature (°C)', temperature, '#FF5733');
+    createChart('humidityChart', 'Humidity (%)', humidity, '#33A1FF');
+    createChart('pressureChart', 'Pressure (hPa)', pressure, '#33FF57');
+    createChart('airChart', 'Air Quality', air_quality, '#FFC300');
+  </script>
+</body>
+</html>

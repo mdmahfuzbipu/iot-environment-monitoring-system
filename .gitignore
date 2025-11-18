@@ -1,0 +1,32 @@
+# Byte-compiled / python stuff
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+.venv/
+venv/
+env/
+ENV/
+
+# Django stuff
+*.sqlite3
+media/
+staticfiles/
+*.log
+
+# env file
+.env
+.env.local
+
+# IDE files
+.vscode/
+.idea/
+
+# mac / windows
+.DS_Store
+Thumbs.db
+
+# Python
+pip-log.txt
+pip-delete-this-directory.txt
